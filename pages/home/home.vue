@@ -1,5 +1,6 @@
 <template>
   <view>
+    <Search class="searchBox" @click="toSearchPage"></Search>
     <swiper :circular="true" :autoplay="true" indicator-dots interval="1500">
       <swiper-item v-for="(item,index) in swiperList" :key="index">
         <navigator :url="'../../subpkg/goods_detail/goods_detail?goods_id='+item.goods_id" class="swiperitem">
@@ -88,6 +89,11 @@
         if (item.name === '分类') uni.switchTab({
           url: '../../pages/cate/cate'
         })
+      },
+      toSearchPage() {
+        uni.navigateTo({
+          url: '../../subpkg/searchPage/searchPage'
+        })
       }
     },
     onLoad() {
@@ -138,5 +144,11 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
+  }
+
+  .searchBox {
+    position: sticky;
+    top: 0;
+    z-index: 999;
   }
 </style>

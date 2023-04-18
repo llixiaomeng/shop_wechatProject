@@ -1,6 +1,6 @@
 <template>
   <view>
-    
+    this is goods_detail
   </view>
 </template>
 
@@ -8,7 +8,7 @@
   export default {
     data() {
       return {
-        
+
       };
     }
   }
