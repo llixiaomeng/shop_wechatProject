@@ -1,6 +1,34 @@
 <template>
   <view>
-    this is goods_detail
+    <view v-if="goodsInfo.goods_price!==undefined">
+      <swiper class="scroll-Pics" :circular="true" :autoplay="true" indicator-dots interval="1500">
+        <swiper-item v-for="(pic,index) in goodsInfo.pics" :key="index">
+          <image :src="pic.pics_mid" mode="heightFix" @click="preview(index)"></image>
+        </swiper-item>
+      </swiper>
+
+      <view class="goods-info">
+        <view class="goods-price">￥ {{goodsInfo.goods_price}}</view>
+        <view class="detail-title">
+          <text>{{goodsInfo.goods_name}}</text>
+          <view class="starornot" v-if="star===false">
+            <uni-icons type="star" size="20"></uni-icons>
+            <view>收藏</view>
+          </view>
+          <view class="starornot" v-else>
+            <uni-icons type="star-filled" size="20"></uni-icons>
+            <view>已收藏</view>
+          </view>
+        </view>
+        <view class="express">快递：免运费</view>
+      </view>
+
+      <rich-text class="goods-detail" :nodes="goodsInfo.goods_introduce"></rich-text>
+    </view>
+
+    <!-- 导航区 -->
+    <uni-goods-nav :fill="true" :options="options" :button-group="customButtonGroup" @click="onClick"
+      @buttonClick="buttonClick" />
   </view>
 </template>
 
@@ -8,12 +36,118 @@
   export default {
     data() {
       return {
+        goodsId: 0,
+        goodsInfo: {},
+        star: true,
+        // 导航数据
+        options: [{
+          icon: 'shop',
+          text: '店铺',
+          info: 2,
+        }, {
+          icon: 'cart',
+          text: '购物车',
+          info: 2
+        }],
+        customButtonGroup: [{
+            text: '加入购物车',
+            backgroundColor: '#ff0000',
+            color: '#fff'
+          },
+          {
+            text: '立即购买',
+            backgroundColor: '#ffa200',
+            color: '#fff'
+          }
+        ],
+      }
+    },
+    methods: {
+      async getDetail() {
+        const {
+          data: res
+        } = await uni.$http.get('/api/public/v1/goods/detail', {
+          goods_id: this.goodsId
+        })
+        res.message.goods_introduce = res.message.goods_introduce.replace(/<img /g, '<img style="display:block;" ')
+        // <div class="lazyimg"><div id="prmtTmplDescWidth"><p>	<img data-src="//image.suning.cn/uimg/b2c/productdesc/150633796606812283.jpg?from=mobile&amp;format=80q.webp" alt="" src="//image.suning.cn/uimg/b2c/productdesc/150633796606812283.jpg?from=mobile&format=80q.webp" width="100%" height="auto">
+        this.goodsInfo = res.message
+      },
+      preview(i) {
+        uni.previewImage({
+          current: i,
+          urls: this.goodsInfo.pics.map(x => x.pics_big)
+        })
+      },
+      onClick(e) { // 左侧
+        if (e.content.text === '购物车') uni.switchTab({
+          url: '../../pages/cart/cart'
+        })
 
-      };
+        //点击店铺呢？
+      },
+      buttonClick(e) {
+        console.log(e)
+        //加入购物车&立即购买obj
+        this.options[1].info++
+      }
+    },
+    onLoad(options) {
+      this.goodsId = options.goods_id
+      this.getDetail()
     }
   }
 </script>
 
 <style lang="scss">
+  .scroll-Pics {
+    height: 240px;
 
+    swiper-item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+  }
+
+  .goods-info {
+    padding: 10px;
+
+    .goods-price {
+      color: #C00000;
+      font-size: 20px;
+    }
+
+    .detail-title {
+      display: flex;
+      justify-content: space-between;
+      margin: 5px 0;
+
+      .starornot {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        width: 90px;
+        padding-left: 5px;
+        border-left: 1px solid #c7c7c7;
+        font-size: 14px;
+        color: #8a8a8a;
+      }
+    }
+
+    .express {
+      font-size: 14px;
+      color: #8a8a8a;
+    }
+  }
+
+  .uni-goods-nav {
+    // position: sticky;
+    // bottom: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+  }
 </style>
