@@ -38,7 +38,10 @@
 </template>
 
 <script>
+  import tarbarMix from "../../mixins/tar-bar.js"
+
   export default {
+    mixins: [tarbarMix],
     data() {
       return {
         swiperList: [],

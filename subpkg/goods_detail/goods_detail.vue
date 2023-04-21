@@ -33,6 +33,11 @@
 </template>
 
 <script>
+  import {
+    mapGetters,
+    mapMutations
+  } from 'vuex'
+
   export default {
     data() {
       return {
@@ -43,11 +48,11 @@
         options: [{
           icon: 'shop',
           text: '店铺',
-          info: 2,
+          // info: 2,
         }, {
           icon: 'cart',
           text: '购物车',
-          info: 2
+          info: 0
         }],
         customButtonGroup: [{
             text: '加入购物车',
@@ -63,6 +68,7 @@
       }
     },
     methods: {
+      ...mapMutations('cart', ['ADDGOODS']),
       async getDetail() {
         const {
           data: res
@@ -70,7 +76,6 @@
           goods_id: this.goodsId
         })
         res.message.goods_introduce = res.message.goods_introduce.replace(/<img /g, '<img style="display:block;" ')
-        // <div class="lazyimg"><div id="prmtTmplDescWidth"><p>	<img data-src="//image.suning.cn/uimg/b2c/productdesc/150633796606812283.jpg?from=mobile&amp;format=80q.webp" alt="" src="//image.suning.cn/uimg/b2c/productdesc/150633796606812283.jpg?from=mobile&format=80q.webp" width="100%" height="auto">
         this.goodsInfo = res.message
       },
       preview(i) {
@@ -83,13 +88,34 @@
         if (e.content.text === '购物车') uni.switchTab({
           url: '../../pages/cart/cart'
         })
-
-        //点击店铺呢？
+        // console.log(e)
+        //点击店铺呢
       },
       buttonClick(e) {
-        console.log(e)
-        //加入购物车&立即购买obj
-        this.options[1].info++
+        // console.log(e)
+        if (e.content.text === '加入购物车') {
+          this.ADDGOODS({
+            goods_id: this.goodsId,
+            goods_name: this.goodsInfo.goods_name,
+            goods_price: this.goodsInfo.goods_price,
+            goods_count: 1,
+            goods_small_logo: this.goodsInfo.pics[0].pics_sma,
+            goods_state: true
+          })
+        }
+        //点击立即购买？
+        // this.options[1].info++
+      }
+    },
+    computed: {
+      ...mapGetters('cart', ['sum'])
+    },
+    watch: {
+      sum: {
+        immediate: true,
+        handler(newValue) {
+          this.options[1].info = newValue
+        }
       }
     },
     onLoad(options) {

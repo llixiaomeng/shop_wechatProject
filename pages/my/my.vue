@@ -5,12 +5,16 @@
 </template>
 
 <script>
+  import tarbarMix from "../../mixins/tar-bar.js"
+
   export default {
     data() {
       return {
-        
+
       };
-    }
+    },
+    mixins: [tarbarMix]
+
   }
 </script>
 

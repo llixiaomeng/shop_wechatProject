@@ -2,13 +2,7 @@
   <view class="page">
     <navigator class="goodsItem" v-for="goodsItem in goodsList" :key="goodsItem.goods_id"
       :url="'../goods_detail/goods_detail?goods_id='+goodsItem.goods_id">
-      <view class="left-img">
-        <image :src="goodsItem.goods_small_logo || defaultImg" mode="widthFix" class="goods-img"></image>
-      </view>
-      <view class="goods-info">
-        <text class="name">{{goodsItem.goods_name}}</text>
-        <text class="price">￥ {{goodsItem.goods_price | priceForm}}</text>
-      </view>
+      <GoodsItem :goodsItem="goodsItem"></GoodsItem>
     </navigator>
   </view>
 </template>
@@ -24,14 +18,8 @@
           pagesize: 10
         },
         total: 0,
-        defaultImg: '../../static/failedimage.jpg',
         goodsList: [],
         isLoading: false
-      }
-    },
-    filters: {
-      priceForm(price) {
-        return price.toFixed(2)
       }
     },
     methods: {
@@ -54,9 +42,6 @@
           uni.hideLoading()
           this.isLoading = false
         }
-      },
-      toGoodsDetail(goodsId) {
-
       }
     },
     onReachBottom() {
@@ -89,34 +74,34 @@
     background-color: white;
   }
 
-  .goodsItem {
-    display: flex;
-    margin: 0 10px;
-    padding: 10px 5px;
-    border-bottom: 1px #c0c0c0 solid;
+  // .goodsItem {
+  //   display: flex;
+  //   margin: 0 10px;
+  //   padding: 10px 5px;
+  //   border-bottom: 1px #c0c0c0 solid;
 
-    .left-img {
-      margin-right: 10px;
+  //   .left-img {
+  //     margin-right: 10px;
 
-      .goods-img {
-        width: 110px;
-        display: block;
-      }
-    }
+  //     .goods-img {
+  //       width: 110px;
+  //       display: block;
+  //     }
+  //   }
 
-    .goods-info {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
+  //   .goods-info {
+  //     display: flex;
+  //     flex-direction: column;
+  //     justify-content: space-between;
 
-      .name {
-        font-size: 14px;
-      }
+  //     .name {
+  //       font-size: 14px;
+  //     }
 
-      .price {
-        font-size: 16px;
-        color: #C00000;
-      }
-    }
-  }
+  //     .price {
+  //       font-size: 16px;
+  //       color: #C00000;
+  //     }
+  //   }
+  // }
 </style>
