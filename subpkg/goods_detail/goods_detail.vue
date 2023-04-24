@@ -1,11 +1,15 @@
 <template>
   <view>
     <view v-if="goodsInfo.goods_price!==undefined">
-      <swiper class="scroll-Pics" :circular="true" :autoplay="true" indicator-dots interval="1500">
+      <swiper class="scroll-Pics" :circular="true" :autoplay="true" indicator-dots interval="1500"
+        v-if="goodsInfo.pics.length>0">
         <swiper-item v-for="(pic,index) in goodsInfo.pics" :key="index">
           <image :src="pic.pics_mid" mode="heightFix" @click="preview(index)"></image>
         </swiper-item>
       </swiper>
+      <view class="no-scroll" v-else>
+        <image class="no-scroll-img" :src="defaultImg" mode="heightFix"></image>
+      </view>
 
       <view class="goods-info">
         <view class="goods-price">￥ {{goodsInfo.goods_price}}</view>
@@ -44,6 +48,7 @@
         goodsId: 0,
         goodsInfo: {},
         star: true,
+        defaultImg: '../../static/failedimage.jpg',
         // 导航数据
         options: [{
           icon: 'shop',
@@ -88,18 +93,18 @@
         if (e.content.text === '购物车') uni.switchTab({
           url: '../../pages/cart/cart'
         })
-        // console.log(e)
         //点击店铺呢
       },
       buttonClick(e) {
-        // console.log(e)
         if (e.content.text === '加入购物车') {
+          // console.log(this.goodsInfo)
           this.ADDGOODS({
             goods_id: this.goodsId,
             goods_name: this.goodsInfo.goods_name,
             goods_price: this.goodsInfo.goods_price,
             goods_count: 1,
-            goods_small_logo: this.goodsInfo.pics[0].pics_sma,
+            goods_small_logo: this.goodsInfo.pics[0]?.pics_sma_url ? this.goodsInfo.pics[0].pics_sma_url : this
+              .defaultImg,
             goods_state: true
           })
         }
@@ -133,6 +138,16 @@
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+  }
+
+  .no-scroll {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .no-scroll-img {
+      height: 240px;
     }
   }
 

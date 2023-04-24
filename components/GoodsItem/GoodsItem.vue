@@ -10,7 +10,7 @@
       <text class="name">{{goodsItem.goods_name}}</text>
       <text class="price">￥ {{goodsItem.goods_price | priceForm}}</text>
       <view v-if="showNumBox" class="numBox">
-        <uni-number-box :value="goodsItem.goods_count" :min="1" background="#2979FF" @change="emitChangeNum" />
+        <uni-number-box :value="goodsItem.goods_count" :min="1" background="#f0f0f0" @change="emitChangeNum" />
       </view>
     </view>
   </view>

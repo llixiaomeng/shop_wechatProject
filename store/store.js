@@ -44,7 +44,13 @@ const cart = {
       })
       state.cart.splice(deleteIndex, 1)
       uni.setStorageSync('mycart', JSON.stringify(state.cart))
-    }
+    },
+    ALLRADIO(state, boolen) {
+      state.cart.forEach((goods) => {
+        goods.goods_state = boolen
+      })
+    },
+
   },
   getters: {
     sum(state) {
@@ -57,7 +63,41 @@ const cart = {
       }
       return sumnum
     },
-
+    choosed(state) {
+      let choosed = 0
+      if (state.cart) {
+        state.cart.forEach((goods) => {
+          if (goods.goods_state) {
+            choosed += goods.goods_count
+          }
+        })
+      }
+      return choosed
+    },
+    choosedPrice(state) {
+      let choosedPrice = 0
+      if (state.cart) {
+        state.cart.forEach((goods) => {
+          if (goods.goods_state) {
+            choosedPrice += goods.goods_count * goods.goods_price
+          }
+        })
+      }
+      return choosedPrice
+    },
+    orderGoods(state) {
+      const payment = []
+      state.cart.forEach((goods) => {
+        if (goods.state) {
+          payment.push({
+            goods_id: goods.goods_id,
+            goods_number: goods.goods_count,
+            goods_price: goods.goods_price
+          })
+        }
+      })
+      return payment
+    }
   },
 }
 
@@ -65,16 +105,31 @@ const user = {
   namespaced: true,
   state: () => ({
     // {userName,telNumber,address,postalCode}
-    address: uni.getStorageSync('user') ? JSON.parse(uni.getStorageSync('user')) : {},
+    address: uni.getStorageSync('address') ? JSON.parse(uni.getStorageSync('address')) : {},
+    token: uni.getStorageSync('mytoken') ? JSON.parse(uni.getStorageSync('mytoken')) : '',
+    // avatarUrl, gender: 0, language: "zh_CN", nickName
+    userInfo: uni.getStorageSync('userInfo') ? JSON.parse(uni.getStorageSync('userInfo')) : {},
+    // from：url, opentype：way
+    redirectInfo: {}
   }),
   mutations: {
     UPPDATEADD(state, value) {
       state.address = value
-      uni.setStorageSync('user', JSON.stringify(state.address))
-    }
+      uni.setStorageSync('address', JSON.stringify(state.address))
+    },
+    SETUSERINFO(state, value) {
+      state.userInfo = value
+      uni.setStorageSync('userInfo', JSON.stringify(state.userInfo))
+    },
+    SETTOKEN(state, value) {
+      state.token = value
+      uni.setStorageSync('mytoken', JSON.stringify(state.token))
+    },
+    SETREDINFO(state, value) {
+      state.redirectInfo = value
+    },
   }
 }
-
 const store = new Vuex.Store({
   modules: {
     cart,

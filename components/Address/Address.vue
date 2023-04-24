@@ -12,6 +12,9 @@
         <uni-icons type="right" size="30"></uni-icons>
       </view>
     </view>
+    <view class="addressBorder">
+      <image class="addressBorderImg" src="../../static/cart_border@2x.png" mode="widthFix"></image>
+    </view>
   </view>
 </template>
 
@@ -62,10 +65,8 @@
 <style lang="scss">
   .addressBox {
     font-size: 14px;
-    height: 100px;
     margin: 0 5px;
     padding-left: 5px;
-    border-bottom: 1px solid #c7c7c7;
 
     .chooseAdd {
       padding: 27px;
@@ -75,12 +76,18 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      height: 100%;
+      height: 100px;
 
       .line1 {
         font-size: 16px;
         font-weight: bold;
         margin-bottom: 5px;
+      }
+    }
+
+    .addressBorder {
+      .addressBorderImg {
+        width: 100%;
       }
     }
   }
