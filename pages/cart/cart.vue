@@ -15,9 +15,11 @@
       <view class="cartlist">
         <block v-for="goodsItem,i in cartList" :key="i">
           <uni-swipe-action>
-            <uni-swipe-action-item :right-options="options" @click="swipeClick($event,goodsItem)">
-              <GoodsItem :goodsItem="goodsItem" :showRadio="true" :showNumBox="true" @changeState="changeState"
-                @changeNum="changeNum"></GoodsItem>
+            <uni-swipe-action-item :right-options="options" @click="swipeClick($event,goodsItem)" :autoClose="true">
+              <navigator :url="'../../subpkg/goods_detail/goods_detail?goods_id='+goodsItem.goods_id">
+                <GoodsItem :goodsItem="goodsItem" :showRadio="true" :showNumBox="true" @changeState="changeState"
+                  @changeNum="changeNum"></GoodsItem>
+              </navigator>
             </uni-swipe-action-item>
           </uni-swipe-action>
         </block>
@@ -128,20 +130,22 @@
         const {
           data: res
         } = await uni.$http.post('/api/public/v1/my/orders/create', orderInfo)
+        if (res.meta.status !== 200) return uni.$showMsg('创建订单失败！请稍后再试！')
 
         const {
           data: res2
         } = await uni.$http.post('/api/public/v1/my/orders/req_unifiedorder', {
           order_number: res.order_number
         })
+        if (res2.meta.status !== 200) return uni.$showMsg('创建订单失败！请稍后再试！')
 
-        const [err1, succ1] = uni.getProvider({
-          service: 'payment'
+        const [err1, succ1] = await uni.getProvider({
+          service: 'payment',
         })
         if (err1) return uni.$showMsg('支付失败！')
 
-        const [err2, succ2] = uni.requestPayment({
-          provider: succ1.provider,
+        const [err2, succ2] = await uni.requestPayment({
+          provider: succ1.provider[0],
           orderInfo: orderInfo,
           timeStamp: res2.message.pay.timeStamp,
           nonceStr: res2.message.pay.nonceStr,
@@ -150,7 +154,8 @@
           paySign: res2.message.pay.paySign
         })
         if (err2) return uni.$showMsg('订单未支付')
-        // 不理解？
+
+        // // 不理解？
         const {
           data: res3
         } = await uni.$http.post('/api/public/v1/my/orders/chkOrder', {
@@ -242,6 +247,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    z-index: 999;
 
     .allRadio {
       margin-left: 15px;

@@ -30,6 +30,13 @@
       <rich-text class="goods-detail" :nodes="goodsInfo.goods_introduce"></rich-text>
     </view>
 
+    <view v-if="!goodsId" class="emptyDetail">
+      <view>
+        <image class="nodetailImg" src="../../static/noSearchResult.png" mode="widthFix"></image>
+      </view>
+      <view class="nodetailWord">商品相关信息查询失败！</view>
+    </view>
+
     <!-- 导航区 -->
     <uni-goods-nav :fill="true" :options="options" :button-group="customButtonGroup" @click="onClick"
       @buttonClick="buttonClick" />
@@ -45,20 +52,22 @@
   export default {
     data() {
       return {
-        goodsId: 0,
+        goodsId: null,
         goodsInfo: {},
         star: true,
         defaultImg: '../../static/failedimage.jpg',
         // 导航数据
         options: [{
-          icon: 'shop',
-          text: '店铺',
-          // info: 2,
-        }, {
-          icon: 'cart',
-          text: '购物车',
-          info: 0
-        }],
+            icon: 'shop',
+            text: '店铺',
+            // info: 2,
+          },
+          {
+            icon: 'cart',
+            text: '购物车',
+            info: 0
+          },
+        ],
         customButtonGroup: [{
             text: '加入购物车',
             backgroundColor: '#ff0000',
@@ -75,6 +84,7 @@
     methods: {
       ...mapMutations('cart', ['ADDGOODS']),
       async getDetail() {
+        if (!this.goodsId) return;
         const {
           data: res
         } = await uni.$http.get('/api/public/v1/goods/detail', {
@@ -93,7 +103,7 @@
         if (e.content.text === '购物车') uni.switchTab({
           url: '../../pages/cart/cart'
         })
-        //点击店铺呢
+        if (e.content.text === '店铺') uni.$showMsg('相关频道开发中~')
       },
       buttonClick(e) {
         if (e.content.text === '加入购物车') {
@@ -108,8 +118,10 @@
             goods_state: true
           })
         }
-        //点击立即购买？
-        // this.options[1].info++
+        //点击立即购买？还不完善。。。
+        if (e.content.text === '立即购买') uni.switchTab({
+          url: '../../pages/cart/cart'
+        })
       }
     },
     computed: {
@@ -131,6 +143,21 @@
 </script>
 
 <style lang="scss">
+  .emptyDetail {
+    margin: 120px auto 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .nodetailImg {
+      width: 160px;
+    }
+
+    .nodetailWord {
+      color: #c7c7c7;
+    }
+  }
+
   .scroll-Pics {
     height: 240px;
 

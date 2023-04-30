@@ -1,6 +1,13 @@
 <template>
   <view class="page">
-    <navigator class="goodsItem" v-for="goodsItem in goodsList" :key="goodsItem.goods_id"
+    <view class="emptyGoodsList" v-if="goodsList.length===0">
+      <view>
+        <image class="noresultImg" src="../../static/noSearchResult.png" mode="widthFix"></image>
+      </view>
+      <view class="noresultWord">暂无相关内容，换个关键词再试试吧！</view>
+    </view>
+
+    <navigator v-else class="goodsItem" v-for="goodsItem in goodsList" :key="goodsItem.goods_id"
       :url="'../goods_detail/goods_detail?goods_id='+goodsItem.goods_id">
       <GoodsItem :goodsItem="goodsItem"></GoodsItem>
     </navigator>
@@ -72,36 +79,20 @@
 <style lang="scss">
   .page {
     background-color: white;
+
+    .emptyGoodsList {
+      margin: 120px auto 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .noresultImg {
+        width: 160px;
+      }
+
+      .noresultWord {
+        color: #c7c7c7;
+      }
+    }
   }
-
-  // .goodsItem {
-  //   display: flex;
-  //   margin: 0 10px;
-  //   padding: 10px 5px;
-  //   border-bottom: 1px #c0c0c0 solid;
-
-  //   .left-img {
-  //     margin-right: 10px;
-
-  //     .goods-img {
-  //       width: 110px;
-  //       display: block;
-  //     }
-  //   }
-
-  //   .goods-info {
-  //     display: flex;
-  //     flex-direction: column;
-  //     justify-content: space-between;
-
-  //     .name {
-  //       font-size: 14px;
-  //     }
-
-  //     .price {
-  //       font-size: 16px;
-  //       color: #C00000;
-  //     }
-  //   }
-  // }
 </style>

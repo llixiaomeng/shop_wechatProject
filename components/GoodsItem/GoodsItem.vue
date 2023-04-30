@@ -1,8 +1,9 @@
 <template>
   <view class="goodsItem">
-    <view class="radio" v-if="showRadio" @click="emitStateChange(goodsItem.goods_id)">
+    <view class="radio" v-if="showRadio" @click.stop="emitStateChange(goodsItem.goods_id)">
       <radio :value="goodsItem.value" :checked="goodsItem.goods_state" color="#C00000" style="transform:scale(0.8)" />
     </view>
+    <!-- <navigator :url="'../../subpkg/goods_detail/goods_detail?goods_id='+goodsItem.goods_id" class="imgAndInfo"> -->
     <view class="left-img">
       <image :src="goodsItem.goods_small_logo || defaultImg" mode="widthFix" class="goods-img"></image>
     </view>
@@ -13,6 +14,7 @@
         <uni-number-box :value="goodsItem.goods_count" :min="1" background="#f0f0f0" @change="emitChangeNum" />
       </view>
     </view>
+    <!-- </navigator> -->
   </view>
 </template>
 
@@ -68,6 +70,9 @@
       margin: auto 0;
     }
 
+    // .imgAndInfo {
+    // display: flex;
+
     .left-img {
       margin-right: 10px;
 
@@ -100,5 +105,8 @@
         // width: 50px;
       }
     }
+
+    // }
+
   }
 </style>

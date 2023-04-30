@@ -99,7 +99,7 @@
       },
       focus: {
         type: Boolean,
-        default: false
+        default: true //改为默认自动聚焦
       },
       readonly: {
         type: Boolean,
@@ -108,8 +108,8 @@
     },
     data() {
       return {
-        show: false,
-        showSync: false,
+        show: true, //改为默认自动聚焦
+        showSync: true, //改为默认自动聚焦
         searchVal: ''
       }
     },

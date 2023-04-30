@@ -12,11 +12,11 @@ const cart = {
   mutations: {
     ADDGOODS(state, value) {
       // 判断购物车里有没有goodsid相同，有则+1，无则push
+      this.commit('cart/judgeStorage')
       const findresult = state.cart.find((goods) => {
         return goods.goods_id === value.goods_id
       })
-      console.log(findresult)
-      // console.log(value)
+      // console.log(findresult)
       if (findresult) {
         findresult.goods_count += 1
       } else {
@@ -32,6 +32,7 @@ const cart = {
       uni.setStorageSync('mycart', JSON.stringify(state.cart))
     },
     CHANGENUM(state, goodsObj) {
+      this.commit('cart/judgeStorage')
       const findresult = state.cart.find((goods) => {
         return goods.goods_id === goodsObj.goods_id
       })
@@ -39,6 +40,7 @@ const cart = {
       uni.setStorageSync('mycart', JSON.stringify(state.cart))
     },
     DELETEGOODS(state, value) {
+      this.commit('cart/judgeStorage')
       const deleteIndex = state.cart.findIndex((goods) => {
         return goods.goods_id === value.goods_id
       })
@@ -46,9 +48,17 @@ const cart = {
       uni.setStorageSync('mycart', JSON.stringify(state.cart))
     },
     ALLRADIO(state, boolen) {
+      this.commit('cart/judgeStorage')
       state.cart.forEach((goods) => {
         goods.goods_state = boolen
       })
+    },
+    judgeStorage(state) {
+      if (uni.getStorageSync('mycart')) {
+        state.cart = JSON.parse(uni.getStorageSync('mycart'))
+      } else {
+        state.cart = []
+      }
     },
 
   },
